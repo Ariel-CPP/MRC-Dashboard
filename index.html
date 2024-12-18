@@ -26,6 +26,8 @@
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
+            overflow: hidden;
+            position: relative;
         }
         .box:hover {
             background-color: #449dc1;
@@ -38,6 +40,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        .box .summary {
+            font-size: 14px;
+            color: #ffffff;
         }
         h2 {
             margin: 0;
@@ -86,10 +92,15 @@
 <body>
     <div class="container">
         <!-- Logo CPP -->
-        <div class="logo">LOGO CPP</div>
+        <div class="logo">
+            <img src="https://ecc.co.id/public/member/1954/1523519515Logo%20New.png" alt="CPP Logo" width="100">
+        </div>
 
         <!-- Marine Research Centre -->
-        <div class="box" onclick="openPopup('popup-mrc')">Marine Research Centre</div>
+        <div class="box" onclick="openPopup('popup-mrc')">
+            <h3>Marine Research Centre</h3>
+            <div class="summary">MRC bertanggung jawab untuk uji coba dan inovasi...</div>
+        </div>
 
         <!-- Openweather -->
         <div class="box" id="weather">Openweather</div>
@@ -99,9 +110,6 @@
 
         <!-- Hari dan Tanggal -->
         <div class="box" id="datetime">Hari dan Tanggal Jam</div>
-
-        <!-- Kritik dan Saran -->
-        <div class="box" onclick="openPopup('popup-feedback')">Kritik dan Saran</div>
 
         <!-- Ajukan Cuti -->
         <div class="box form-button">
@@ -117,19 +125,6 @@
         <span class="close" onclick="closePopup()">&times;</span>
         <h2>Marine Research Centre</h2>
         <p>Marine Research Centre (MRC) adalah salah satu departemen di bawah naungan PT Central Proteina Prima, yang tergabung dalam Technology Research Division. MRC bertanggung jawab untuk melaksanakan uji coba (trial) dan inovasi dalam budidaya udang dan ikan. Fokus utama departemen ini adalah melakukan penelitian terapan guna meningkatkan efisiensi dan produktivitas budidaya, baik melalui pengembangan teknologi baru, penerapan teknik budidaya modern, maupun evaluasi produk dan metode yang mendukung keberlanjutan sektor akuakultur. MRC berperan strategis dalam mendukung visi perusahaan untuk menjadi pemimpin dalam industri perikanan dan akuakultur di tingkat global.</p>
-    </div>
-
-    <!-- Kritik dan Saran Popup -->
-    <div class="popup" id="popup-feedback">
-        <span class="close" onclick="closePopup()">&times;</span>
-        <h2>Kritik dan Saran</h2>
-        <form action="mailto:ariel.hananya@cpp.co.id" method="post" enctype="text/plain">
-            <label for="name">Nama:</label><br>
-            <input type="text" id="name" name="Nama" required><br><br>
-            <label for="message">Pesan:</label><br>
-            <textarea id="message" name="Pesan" rows="5" cols="30" required></textarea><br><br>
-            <input type="submit" value="Kirim">
-        </form>
     </div>
 
     <script>
