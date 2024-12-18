@@ -1,55 +1,38 @@
-// Display current time
-function updateTime() {
-    const now = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const time = now.toLocaleTimeString();
-    const date = now.toLocaleDateString('en-GB', options);
-    document.getElementById('current-time').textContent = `${time} - ${date}`;
-}
-setInterval(updateTime, 1000);
-updateTime();
+document.addEventListener('DOMContentLoaded', function() {
+    // Update current time, date, and day
+    function updateTime() {
+        const now = moment();
+        document.getElementById('current-time').innerText = now.format('h:mm:ss a');
+        document.getElementById('current-date').innerText = now.format('MMMM Do YYYY');
+        document.getElementById('current-day').innerText = now.format('dddd');
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
 
-// Fetch weather data
-const weatherAPI = 'https://api.openweathermap.org/data/2.5/weather?q=Suak,Lampung,ID&units=metric&appid=77d988f2a3d7db4fcd909c288c1f0d31';
-axios.get(weatherAPI)
-    .then(response => {
-        const weather = response.data;
-        document.getElementById('weather-info').innerHTML = `
-            <p><strong>${weather.weather[0].description}</strong></p>
-            <p>Temperature: ${weather.main.temp} &#8451;</p>
-            <p>Humidity: ${weather.main.humidity}%</p>
-        `;
-    })
-    .catch(error => {
-        document.getElementById('weather-info').textContent = 'Unable to fetch weather data.';
+    // Fetch weather data
+    const apiKey = '77d988f2a3d7db4fcd909c288c1f0d31'; // Replace with your OpenWeatherMap API key
+    const city = 'Suak, Sidomulyo, Lampung Selatan';
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    axios.get(url)
+        .then(response => {
+            const data = response.data;
+            document.getElementById('weather-info').innerText = `Temperature: ${data.main.temp}°C, Condition: ${data.weather[0].description}`;
+            document.getElementById('weather-icon').src = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+        })
+        .catch(error => {
+            document.getElementById('weather-info').innerText = 'Error fetching weather data.';
+        });
+
+    // Handle agenda form submission
+    document.getElementById('agenda-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const date = document.getElementById('agenda-date').value;
+        const time = document.getElementById('agenda-time').value;
+        const details = document.getElementById('agenda-details').value;
+
+        // Logic to add the agenda to the calendar
+        console.log(`Agenda added: ${date} ${time} - ${details}`);
+        alert('Agenda added successfully!');
     });
-
-// Initialize calendar
-document.addEventListener('DOMContentLoaded', function () {
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        events: [
-            { title: 'New Year', start: '2024-01-01', color: 'red', textColor: 'white' },
-            { title: 'Independence Day', start: '2024-08-17', color: 'red', textColor: 'white' },
-            // Add more holidays here...
-        ]
-    });
-    calendar.render();
-});
-
-// Handle agenda form submission
-document.getElementById('agenda-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const date = document.getElementById('agenda-date').value;
-    const time = document.getElementById('agenda-time').value;
-    const details = document.getElementById('agenda-details').value;
-
-    const calendar = FullCalendar.Calendar.getCalendar(document.getElementById('calendar'));
-    calendar.addEvent({
-        title: details,
-        start: `${date}T${time}`
-    });
-
-    alert('Agenda added to calendar!');
 });
