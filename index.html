@@ -4,51 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marine Research Centre Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f8ff;
+        }
+        header {
+            text-align: center;
+            margin: 20px;
+        }
+        header img {
+            width: 100px;
+        }
+        header h1 {
+            margin: 10px 0;
+        }
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin-top: 20px;
+        }
+        .section {
+            flex: 1;
+            margin: 0 10px;
+        }
+        .weather, .agenda {
+            padding: 20px;
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .weather h3, .agenda h3 {
+            text-align: center;
+        }
+        .calendar {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #current-time {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .button-container a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .button-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="logo-container">
-            <img src="https://drive.google.com/file/d/1cSVjMbXkkPn1eryKEABwdzzAfBAa6_2O/view?usp=drivesdk" alt="Logo CPP">
-            <img src="https://drive.google.com/file/d/1hPz_187TjLCzgVwNw8E8GT8T272RkKtd/view?usp=drivesdk" alt="Logo MRC">
-        </div>
+        <img src="cpp_logo.png" alt="CPP Logo">
         <h1>Marine Research Centre Dashboard</h1>
     </header>
 
-    <div class="content">
-        <div class="left">
-            <div class="info">
-                <p id="tanggal">Tanggal: </p>
-                <p id="jam">Jam: </p>
-                <p id="cuaca">Cuaca: </p>
+    <div class="main-container">
+        <div class="section">
+            <div class="weather">
+                <h3>Weather in Suak, Sidomulyo, Lampung Selatan</h3>
+                <div id="weather-info">Loading weather data...</div>
             </div>
-            <form id="agenda-form">
-                <label for="agenda-tanggal">Tanggal:</label>
-                <input type="date" id="agenda-tanggal">
-                <label for="agenda-jam">Jam:</label>
-                <input type="time" id="agenda-jam">
-                <label for="agenda-desc">Agenda:</label>
-                <input type="text" id="agenda-desc">
-                <button type="submit">Tambahkan Agenda</button>
-            </form>
+            <div class="agenda">
+                <h3>Add Agenda</h3>
+                <form id="agenda-form">
+                    <label for="agenda-date">Date:</label>
+                    <input type="date" id="agenda-date" name="agenda-date" required><br><br>
+                    <label for="agenda-time">Time:</label>
+                    <input type="time" id="agenda-time" name="agenda-time" required><br><br>
+                    <label for="agenda-details">Details:</label>
+                    <textarea id="agenda-details" name="agenda-details" required></textarea><br><br>
+                    <button type="submit">Add to Calendar</button>
+                </form>
+            </div>
         </div>
 
-        <div class="right">
-            <div id="absensi">
-                <h3>Data Absensi</h3>
-                <!-- Data dari Google Sheets akan ditampilkan di sini -->
-            </div>
-            <div id="calendar"></div>
+        <div class="section">
+            <div class="calendar" id="calendar"></div>
         </div>
     </div>
 
-    <div class="footer">
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1-A49X6mQcDRB4KrGnwj7Z-Q9DKk_6vhraSFbBy_NxCNUqg/viewform" target="_blank">
-            <button>Ajukan Cuti</button>
-        </a>
+    <div id="current-time"></div>
+
+    <div class="button-container">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1-A49X6mQcDRB4KrGnwj7Z-Q9DKk_6vhraSFbBy_NxCNUqg/viewform?pli=1" target="_blank">Apply for Leave</a>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Display current time
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const time = now.toLocaleTimeString();
+            const date = now.toLocaleDateString('en-GB', options);
+            document.getElementById('current-time').textContent = `${time} - ${date}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Fetch weather data
+        const weatherAPI = 'https://api.openweathermap.org/data/2.5/weather?q=Suak,Lampung,ID&units=metric&appid=77d988f2a3d7db4fcd909c288c1f0d31';
+        axios.get(weatherAPI)
+            .then(response => {
+                const weather = response.data;
+                document.getElementById('weather-info').innerHTML = `
+                    <p><strong>${weather.weather[0].description}</strong></p>
+                    <p>Temperature: ${weather.main.temp} &#8451;</p>
+                    <p>Humidity: ${weather.main.humidity}%</p>
+                `;
+            })
+            .catch(error => {
+                document.getElementById('weather-info').textContent = 'Unable to fetch weather data.';
+            });
+
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [
+                    { title: 'New Year', start: '2024-01-01', color: 'red', textColor: 'white' },
+                    { title: 'Independence Day', start: '2024-08-17', color: 'red', textColor: 'white' },
+                    // Add more holidays here...
+                ]
+            });
+            calendar.render();
+        });
+
+        // Handle agenda form submission
+        document.getElementById('agenda-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const date = document.getElementById('agenda-date').value;
+            const time = document.getElementById('agenda-time').value;
+            const details = document.getElementById('agenda-details').value;
+
+            const calendar = FullCalendar.Calendar.getCalendar(document.getElementById('calendar'));
+            calendar.addEvent({
+                title: details,
+                start: `${date}T${time}`
+            });
+
+            alert('Agenda added to calendar!');
+        });
+    </script>
 </body>
 </html>
