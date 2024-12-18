@@ -20,7 +20,7 @@ getWeather();
 // Mengambil Data Absensi dari Google Sheets
 async function getAbsensi() {
     const SHEET_ID = '1iIRjxpmRaGuqjAxxqzhzCbmLXsE8sLeUqJ6ajxBmC4w';
-    const API_KEY = 'YOUR_GOOGLE_SHEETS_API_KEY';
+    const API_KEY = '1097877629845-87tt9aof8lecp9c9eih9lqnltjdejbs6.apps.googleusercontent.com';
     const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1!C:M?key=${API_KEY}`);
     const data = await response.json();
     const rows = data.values;
