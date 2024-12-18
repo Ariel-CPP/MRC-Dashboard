@@ -14,31 +14,35 @@
     </header>
 
     <div class="main-container">
-        <div class="section">
-            <div class="weather">
-                <h3>Weather in Suak, Sidomulyo, Lampung Selatan</h3>
-                <div id="weather-info">Loading weather data...</div>
-            </div>
-            <div class="agenda">
-                <h3>Add Agenda</h3>
-                <form id="agenda-form">
-                    <label for="agenda-date">Date:</label>
-                    <input type="date" id="agenda-date" name="agenda-date" required><br><br>
-                    <label for="agenda-time">Time:</label>
-                    <input type="time" id="agenda-time" name="agenda-time" required><br><br>
-                    <label for="agenda-details">Details:</label>
-                    <textarea id="agenda-details" name="agenda-details" required></textarea><br><br>
-                    <button type="submit">Add to Calendar</button>
-                </form>
-            </div>
+        <div class="left-section">
+            <div id="current-time"></div>
+            <div id="current-date"></div>
+            <div id="current-day"></div>
         </div>
 
-        <div class="section">
-            <div class="calendar" id="calendar"></div>
+        <div class="right-section">
+            <div class="weather">
+                <h3>Weather in Suak, Sidomulyo, Lampung Selatan</h3>
+                <img id="weather-icon" src="" alt="Weather Icon">
+                <div id="weather-info">Loading weather data...</div>
+            </div>
         </div>
     </div>
 
-    <div id="current-time"></div>
+    <div class="agenda-section">
+        <h3>Add Agenda</h3>
+        <form id="agenda-form">
+            <label for="agenda-date">Date:</label>
+            <input type="date" id="agenda-date" name="agenda-date" required><br><br>
+            <label for="agenda-time">Time:</label>
+            <input type="time" id="agenda-time" name="agenda-time" required><br><br>
+            <label for="agenda-details">Details:</label>
+            <textarea id="agenda-details" name="agenda-details" required></textarea><br><br>
+            <button type="submit">Add to Calendar</button>
+        </form>
+    </div>
+
+    <div class="calendar" id="calendar"></div>
 
     <div class="button-container">
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1-A49X6mQcDRB4KrGnwj7Z-Q9DKk_6vhraSFbBy_NxCNUqg/viewform?pli=1" target="_blank">Apply for Leave</a>
