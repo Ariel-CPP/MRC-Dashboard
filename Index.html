@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marine Research Centre Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="URL_LOGO_CPP" alt="Logo CPP">
+            <img src="URL_LOGO_MRC" alt="Logo MRC">
+        </div>
+        <h1>Marine Research Centre Dashboard</h1>
+    </header>
+
+    <div class="content">
+        <div class="left">
+            <div class="info">
+                <p id="tanggal">Tanggal: </p>
+                <p id="jam">Jam: </p>
+                <p id="cuaca">Cuaca: </p>
+            </div>
+            <form id="agenda-form">
+                <label for="agenda-tanggal">Tanggal:</label>
+                <input type="date" id="agenda-tanggal">
+                <label for="agenda-jam">Jam:</label>
+                <input type="time" id="agenda-jam">
+                <label for="agenda-desc">Agenda:</label>
+                <input type="text" id="agenda-desc">
+                <button type="submit">Tambahkan Agenda</button>
+            </form>
+        </div>
+
+        <div class="right">
+            <div id="absensi">
+                <h3>Data Absensi</h3>
+                <!-- Data dari Google Sheets akan ditampilkan di sini -->
+            </div>
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1-A49X6mQcDRB4KrGnwj7Z-Q9DKk_6vhraSFbBy_NxCNUqg/viewform" target="_blank">
+            <button>Ajukan Cuti</button>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
