@@ -3,54 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marine Research Centre Dashboard</title>
-    <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
+    <title>CPP Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #003366;
+            color: #fff;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .box {
+            background-color: #61b3ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .box.pink {
+            background-color: #f783ac;
+        }
+
+        .logo {
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .logo img {
+            max-width: 80%;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #003366;
+        }
+
+        textarea, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #003366;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0055a5;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <img src="cpp_logo.png" alt="CPP Logo">
-        <h1>Marine Research Centre Dashboard</h1>
-    </header>
-
-    <div class="main-container">
-        <div class="left-section">
-            <div id="current-time"></div>
-            <div id="current-date"></div>
-            <div id="current-day"></div>
+    <div class="container">
+        <!-- Logo -->
+        <div class="box logo">
+            <img src="https://ecc.co.id/public/member/1954/1523519515Logo%20New.png" alt="Logo CPP">
         </div>
 
-        <div class="right-section">
-            <div class="weather">
-                <h3>Weather in Suak, Sidomulyo, Lampung Selatan</h3>
-                <img id="weather-icon" src="" alt="Weather Icon">
-                <div id="weather-info">Loading weather data...</div>
-            </div>
+        <!-- Marine Research Centre -->
+        <div class="box pink">
+            <h2>Marine Research Centre</h2>
+            <p>Information related to marine research will go here.</p>
+        </div>
+
+        <!-- OpenWeather -->
+        <div class="box pink" id="weather">
+            <h2>Weather Forecast</h2>
+            <p>Loading weather data...</p>
+        </div>
+
+        <!-- Company Updates -->
+        <div class="box" id="company-updates">
+            <h2>Company Updates</h2>
+            <ul>
+                <li>Loading news...</li>
+            </ul>
+        </div>
+
+        <!-- Date & Time -->
+        <div class="box">
+            <h2>Hari dan Tanggal Jam</h2>
+            <p id="date-time">Loading...</p>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="box pink">
+            <h2>Ajukan Cuti</h2>
+            <form id="feedback-form">
+                <textarea id="feedback" placeholder="Masukan kritik dan saran Anda"></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+
+        <!-- Kritik dan Saran -->
+        <div class="box">
+            <h2>Kritik dan Saran</h2>
+            <p>Send your suggestions and feedback.</p>
         </div>
     </div>
 
-    <div class="agenda-section">
-        <h3>Add Agenda</h3>
-        <form id="agenda-form">
-            <label for="agenda-date">Date:</label>
-            <input type="date" id="agenda-date" name="agenda-date" required><br><br>
-            <label for="agenda-time">Time:</label>
-            <input type="time" id="agenda-time" name="agenda-time" required><br><br>
-            <label for="agenda-details">Details:</label>
-            <textarea id="agenda-details" name="agenda-details" required></textarea><br><br>
-            <button type="submit">Add to Calendar</button>
-        </form>
-    </div>
+    <script>
+        // Fetch and display current date and time
+        function updateDateTime() {
+            const dateTime = new Date();
+            document.getElementById("date-time").textContent = dateTime.toLocaleString("id-ID", {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
 
-    <div class="calendar" id="calendar"></div>
+        // Fetch OpenWeather API data
+        async function fetchWeather() {
+            const apiKey = '77d988f2a3d7db4fcd909c288c1f0d31';
+            const city = 'Suak, Sidomulyo, Lampung Selatan';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=Sidomulyo&appid=${apiKey}&units=metric&lang=id`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const weatherBox = document.getElementById('weather');
+                weatherBox.innerHTML = `<h2>Weather Forecast</h2>
+                                        <p>${data.weather[0].description}</p>
+                                        <p>Temperature: ${data.main.temp}&#8451;</p>`;
+            } catch (error) {
+                console.error('Error fetching weather:', error);
+                document.getElementById('weather').innerHTML = "Failed to load weather data.";
+            }
+        }
+        fetchWeather();
 
-    <div class="button-container">
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1-A49X6mQcDRB4KrGnwj7Z-Q9DKk_6vhraSFbBy_NxCNUqg/viewform?pli=1" target="_blank">Apply for Leave</a>
-    </div>
+        // Fetch company updates (Google News API or placeholder)
+        async function fetchCompanyUpdates() {
+            const updatesBox = document.getElementById("company-updates");
+            try {
+                const response = await fetch('https://api.currentsapi.services/v1/latest-news?keywords=Central%20Proteina%20Prima'); // Use correct API
+                const data = await response.json();
+                updatesBox.innerHTML = `<h2>Company Updates</h2>`;
+                let newsHTML = "<ul>";
+                data.news.slice(0, 3).forEach(article => {
+                    newsHTML += `<li><a href="${article.url}" target="_blank">${article.title}</a></li>`;
+                });
+                newsHTML += "</ul>";
+                updatesBox.innerHTML += newsHTML;
+            } catch (error) {
+                console.error("Error fetching news:", error);
+                updatesBox.innerHTML = "<p>Failed to load company updates.</p>";
+            }
+        }
+        fetchCompanyUpdates();
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="scripts/script.js"></script>
+        // Feedback Form Submission
+        document.getElementById("feedback-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const feedback = document.getElementById("feedback").value;
+            window.location.href = `mailto:ariel.hananya@cpp.co.id?subject=Kritik%20dan%20Saran&body=${encodeURIComponent(feedback)}`;
+        });
+    </script>
 </body>
 </html>
