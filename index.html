@@ -3,179 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPP Dashboard</title>
+    <title>Dashboard CPP</title>
     <style>
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
             background-color: #003366;
-            color: #fff;
+            color: #ffffff;
         }
-
         .container {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: auto auto;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto;
             gap: 10px;
             padding: 20px;
         }
-
         .box {
-            background-color: #61b3ff;
+            background-color: #55b4e6;
             padding: 20px;
             border-radius: 10px;
-        }
-
-        .box.pink {
-            background-color: #f783ac;
-        }
-
-        .logo {
             text-align: center;
-            background-color: white;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        .logo img {
-            max-width: 80%;
-        }
-
-        h2 {
-            margin-bottom: 10px;
-            color: #003366;
-        }
-
-        textarea, input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        button {
-            background-color: #003366;
-            color: white;
             cursor: pointer;
+            transition: 0.3s;
         }
-
-        button:hover {
-            background-color: #0055a5;
+        .box:hover {
+            background-color: #449dc1;
+        }
+        .logo {
+            grid-column: span 1;
+            background-color: #ffffff;
+            color: #ff3366;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        h2 {
+            margin: 0;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+        .popup .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
+        .form-button a {
+            text-decoration: none;
+            color: white;
+            background-color: #ff3366;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Logo -->
-        <div class="box logo">
-            <img src="https://ecc.co.id/public/member/1954/1523519515Logo%20New.png" alt="Logo CPP">
-        </div>
+        <!-- Logo CPP -->
+        <div class="logo">LOGO CPP</div>
 
         <!-- Marine Research Centre -->
-        <div class="box pink">
-            <h2>Marine Research Centre</h2>
-            <p>IMarine Research Centre (MRC) adalah salah satu departemen di bawah naungan PT Central Proteina Prima, yang tergabung dalam Technology Research Division. MRC bertanggung jawab untuk melaksanakan uji coba (trial) dan inovasi dalam budidaya udang dan ikan. Fokus utama departemen ini adalah melakukan penelitian terapan guna meningkatkan efisiensi dan produktivitas budidaya, baik melalui pengembangan teknologi baru, penerapan teknik budidaya modern, maupun evaluasi produk dan metode yang mendukung keberlanjutan sektor akuakultur. MRC berperan strategis dalam mendukung visi perusahaan untuk menjadi pemimpin dalam industri perikanan dan akuakultur di tingkat global.</p>
-        </div>
+        <div class="box" onclick="openPopup('popup-mrc')">Marine Research Centre</div>
 
-        <!-- OpenWeather -->
-        <div class="box pink" id="weather">
-            <h2>Weather Forecast</h2>
-            <p>Loading weather data...</p>
-        </div>
+        <!-- Openweather -->
+        <div class="box" id="weather">Openweather</div>
 
         <!-- Company Updates -->
-        <div class="box" id="company-updates">
-            <h2>Company Updates</h2>
-            <ul>
-                <li>Loading news...</li>
-            </ul>
-        </div>
+        <div class="box" id="company-updates">Company Updates</div>
 
-        <!-- Date & Time -->
-        <div class="box">
-            <h2>Hari dan Tanggal Jam</h2>
-            <p id="date-time">Loading...</p>
-        </div>
-
-        <!-- Feedback Form -->
-        <div class="box pink">
-            <h2>Ajukan Cuti</h2>
-            <form id="feedback-form">
-                <textarea id="feedback" placeholder="Masukan kritik dan saran Anda"></textarea>
-                <button type="submit">Send</button>
-            </form>
-        </div>
+        <!-- Hari dan Tanggal -->
+        <div class="box" id="datetime">Hari dan Tanggal Jam</div>
 
         <!-- Kritik dan Saran -->
-        <div class="box">
-            <h2>Kritik dan Saran</h2>
-            <p>Send your suggestions and feedback.</p>
+        <div class="box" onclick="openPopup('popup-feedback')">Kritik dan Saran</div>
+
+        <!-- Ajukan Cuti -->
+        <div class="box form-button">
+            <a href="https://forms.gle/mLUiXeiuJq5mgjU17" target="_blank">Ajukan Cuti</a>
         </div>
     </div>
 
-    <script>
-        // Fetch and display current date and time
-        function updateDateTime() {
-            const dateTime = new Date();
-            document.getElementById("date-time").textContent = dateTime.toLocaleString("id-ID", {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-            });
-        }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
+    <!-- Popups -->
+    <div class="overlay" id="overlay" onclick="closePopup()"></div>
 
-        // Fetch OpenWeather API data
+    <!-- Marine Research Centre Popup -->
+    <div class="popup" id="popup-mrc">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h2>Marine Research Centre</h2>
+        <p>Marine Research Centre (MRC) adalah salah satu departemen di bawah naungan PT Central Proteina Prima, yang tergabung dalam Technology Research Division. MRC bertanggung jawab untuk melaksanakan uji coba (trial) dan inovasi dalam budidaya udang dan ikan. Fokus utama departemen ini adalah melakukan penelitian terapan guna meningkatkan efisiensi dan produktivitas budidaya, baik melalui pengembangan teknologi baru, penerapan teknik budidaya modern, maupun evaluasi produk dan metode yang mendukung keberlanjutan sektor akuakultur. MRC berperan strategis dalam mendukung visi perusahaan untuk menjadi pemimpin dalam industri perikanan dan akuakultur di tingkat global.</p>
+    </div>
+
+    <!-- Kritik dan Saran Popup -->
+    <div class="popup" id="popup-feedback">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h2>Kritik dan Saran</h2>
+        <form action="mailto:ariel.hananya@cpp.co.id" method="post" enctype="text/plain">
+            <label for="name">Nama:</label><br>
+            <input type="text" id="name" name="Nama" required><br><br>
+            <label for="message">Pesan:</label><br>
+            <textarea id="message" name="Pesan" rows="5" cols="30" required></textarea><br><br>
+            <input type="submit" value="Kirim">
+        </form>
+    </div>
+
+    <script>
+        function openPopup(id) {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+        }
+
+        // Fetch Weather Data
         async function fetchWeather() {
             const apiKey = '77d988f2a3d7db4fcd909c288c1f0d31';
-            const city = 'Suak, Sidomulyo, Lampung Selatan';
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=Sidomulyo&appid=${apiKey}&units=metric&lang=id`;
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=Suak,Lampung,ID&units=metric&appid=${apiKey}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                const weatherBox = document.getElementById('weather');
-                weatherBox.innerHTML = `<h2>Weather Forecast</h2>
-                                        <p>${data.weather[0].description}</p>
-                                        <p>Temperature: ${data.main.temp}&#8451;</p>`;
+                document.getElementById('weather').innerText = `Weather: ${data.main.temp}°C, ${data.weather[0].description}`;
             } catch (error) {
-                console.error('Error fetching weather:', error);
-                document.getElementById('weather').innerHTML = "Failed to load weather data.";
+                document.getElementById('weather').innerText = 'Unable to fetch weather data';
             }
         }
         fetchWeather();
 
-        // Fetch company updates (Google News API or placeholder)
-        async function fetchCompanyUpdates() {
-            const updatesBox = document.getElementById("company-updates");
-            try {
-                const response = await fetch('https://api.currentsapi.services/v1/latest-news?keywords=Central%20Proteina%20Prima'); // Use correct API
-                const data = await response.json();
-                updatesBox.innerHTML = `<h2>Company Updates</h2>`;
-                let newsHTML = "<ul>";
-                data.news.slice(0, 3).forEach(article => {
-                    newsHTML += `<li><a href="${article.url}" target="_blank">${article.title}</a></li>`;
-                });
-                newsHTML += "</ul>";
-                updatesBox.innerHTML += newsHTML;
-            } catch (error) {
-                console.error("Error fetching news:", error);
-                updatesBox.innerHTML = "<p>Failed to load company updates.</p>";
-            }
+        // Display Date and Time
+        function updateDateTime() {
+            const now = new Date();
+            const formatted = now.toLocaleString('id-ID');
+            document.getElementById('datetime').innerText = formatted;
         }
-        fetchCompanyUpdates();
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
 
-        // Feedback Form Submission
-        document.getElementById("feedback-form").addEventListener("submit", function (e) {
-            e.preventDefault();
-            const feedback = document.getElementById("feedback").value;
-            window.location.href = `mailto:ariel.hananya@cpp.co.id?subject=Kritik%20dan%20Saran&body=${encodeURIComponent(feedback)}`;
-        });
+        // Placeholder for Company Updates
+        document.getElementById('company-updates').innerText = 'Top 3 News about Central Proteina Prima';
     </script>
 </body>
 </html>
