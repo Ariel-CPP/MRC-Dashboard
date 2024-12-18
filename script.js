@@ -8,7 +8,7 @@ setInterval(updateTime, 1000);
 
 // Mengambil Data Cuaca
 async function getWeather() {
-    const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
+    const API_KEY = '77d988f2a3d7db4fcd909c288c1f0d31';
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Suak,Sidomulyo,Lampung&units=metric&appid=${API_KEY}`);
     const data = await response.json();
     const description = data.weather[0].description;
