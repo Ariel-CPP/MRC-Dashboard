@@ -1,168 +1,250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard MRC-CPP</title>
+    <title>Company Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #003366;
-            color: #ffffff;
-        }
-        .container {
+        .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: auto;
-            gap: 10px;
+            gap: 20px;
             padding: 20px;
+            background-color: #003366;
+            min-height: 100vh;
         }
-        .box {
-            background-color: #55b4e6;
+        .grid-item {
+            background: white;
             padding: 20px;
-            border-radius: 10px;
-            text-align: center;
+            border-radius: 15px;
             cursor: pointer;
-            transition: 0.3s;
-            overflow: hidden;
-            position: relative;
+            transition: transform 0.3s;
         }
-        .box:hover {
-            background-color: #449dc1;
+        .grid-item:hover {
+            transform: scale(1.02);
         }
-        .logo {
-            grid-column: span 1;
-            background-color: #ffffff;
-            color: #ff3366;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .box .summary {
-            font-size: 14px;
-            color: #ffffff;
-        }
-        h2 {
-            margin: 0;
-        }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            color: #000;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-        }
-        .popup .close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .overlay {
+        .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 500;
+            background-color: rgba(0,0,0,0.7);
         }
-        .form-button a {
-            text-decoration: none;
-            color: white;
-            background-color: #ff3366;
-            padding: 10px 15px;
-            border-radius: 5px;
-            display: inline-block;
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 70%;
+            max-width: 700px;
+        }
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 28px;
+        }
+        #calendar {
+            background: white;
+            padding: 20px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-day {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        .holiday {
+            background-color: #ffebee;
+            color: red;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="grid-container">
         <!-- Logo CPP -->
-        <div class="logo">
-            <img src="https://ecc.co.id/public/member/1954/1523519515Logo%20New.png" alt="CPP Logo" width="100">
+        <div class="grid-item" style="background-color: white;">
+            <img src="/api/placeholder/250/250" alt="Logo CPP" class="w-full h-auto">
         </div>
 
         <!-- Marine Research Centre -->
-        <div class="box" onclick="openPopup('popup-mrc')">
-            <h3>Marine Research Centre</h3>
-            <div class="summary">MRC bertanggung jawab untuk uji coba dan inovasi...</div>
+        <div class="grid-item" style="background-color: #ff69b4;" onclick="openModal()">
+            <h2 class="text-white text-xl font-bold">Marine Research Centre</h2>
+            <p class="text-white mt-2">Klik untuk informasi lebih lanjut</p>
         </div>
 
-        <!-- Openweather -->
-        <div class="box" id="weather">Openweather</div>
+        <!-- OpenWeather -->
+        <div class="grid-item" style="background-color: #ffa500;" id="weather">
+            <h2 class="text-white text-xl font-bold">Openweather</h2>
+            <div id="weather-info" class="text-white mt-2">Loading weather data...</div>
+        </div>
 
         <!-- Company Updates -->
-        <div class="box" id="company-updates">Company Updates</div>
+        <div class="grid-item" style="background-color: #87ceeb;">
+            <h2 class="text-white text-xl font-bold">Company Updates</h2>
+        </div>
 
         <!-- Hari dan Tanggal -->
-        <div class="box" id="datetime">Hari dan Tanggal Jam</div>
+        <div class="grid-item" style="background-color: #ff6b6b;">
+            <h2 class="text-white text-xl font-bold">Hari dan Tanggal</h2>
+            <div id="date-time" class="text-white mt-2"></div>
+        </div>
 
         <!-- Ajukan Cuti -->
-        <div class="box form-button">
-            <a href="https://forms.gle/mLUiXeiuJq5mgjU17" target="_blank">Ajukan Cuti</a>
+        <div class="grid-item" style="background-color: #da70d6;" onclick="window.open('https://forms.gle/mLUiXeiuJq5mgjU17', '_blank')">
+            <h2 class="text-white text-xl font-bold">Ajukan Cuti</h2>
+            <p class="text-white mt-2">Klik untuk mengajukan cuti</p>
+        </div>
+
+        <!-- Calendar -->
+        <div class="grid-item" style="background-color: #dcdcdc;" id="calendar">
+            <h2 class="text-xl font-bold mb-4">Kalender</h2>
+            <div class="calendar-header">
+                <button onclick="previousMonth()">&lt;</button>
+                <span id="current-month"></span>
+                <button onclick="nextMonth()">&gt;</button>
+            </div>
+            <div class="calendar-grid" id="calendar-days"></div>
         </div>
     </div>
 
-    <!-- Popups -->
-    <div class="overlay" id="overlay" onclick="closePopup()"></div>
-
-    <!-- Marine Research Centre Popup -->
-    <div class="popup" id="popup-mrc">
-        <span class="close" onclick="closePopup()">&times;</span>
-        <h2>Marine Research Centre</h2>
-        <p>Marine Research Centre (MRC) adalah salah satu departemen di bawah naungan PT Central Proteina Prima, yang tergabung dalam Technology Research Division. MRC bertanggung jawab untuk melaksanakan uji coba (trial) dan inovasi dalam budidaya udang dan ikan. Fokus utama departemen ini adalah melakukan penelitian terapan guna meningkatkan efisiensi dan produktivitas budidaya, baik melalui pengembangan teknologi baru, penerapan teknik budidaya modern, maupun evaluasi produk dan metode yang mendukung keberlanjutan sektor akuakultur. MRC berperan strategis dalam mendukung visi perusahaan untuk menjadi pemimpin dalam industri perikanan dan akuakultur di tingkat global.</p>
+    <!-- Modal for MRC -->
+    <div id="mrcModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 class="text-2xl font-bold mb-4">Marine Research Centre (MRC)</h2>
+            <p>Marine Research Centre (MRC) adalah salah satu departemen di bawah naungan PT Central Proteina Prima, yang tergabung dalam Technology Research Division. MRC bertanggung jawab untuk melaksanakan uji coba (trial) dan inovasi dalam budidaya udang dan ikan.</p>
+            <p class="mt-4">Fokus utama departemen ini adalah melakukan penelitian terapan guna meningkatkan efisiensi dan produktivitas budidaya, baik melalui pengembangan teknologi baru, penerapan teknik budidaya modern, maupun evaluasi produk dan metode yang mendukung keberlanjutan sektor akuakultur.</p>
+            <p class="mt-4">MRC berperan strategis dalam mendukung visi perusahaan untuk menjadi pemimpin dalam industri perikanan dan akuakultur di tingkat global.</p>
+        </div>
     </div>
 
     <script>
-        function openPopup(id) {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById(id).style.display = 'block';
-        }
-
-        function closePopup() {
-            document.getElementById('overlay').style.display = 'none';
-            document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
-        }
-
-        // Fetch Weather Data
-        async function fetchWeather() {
+        // Weather API
+        async function getWeather() {
             const apiKey = '77d988f2a3d7db4fcd909c288c1f0d31';
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=Suak,Lampung,ID&units=metric&appid=${apiKey}`;
+            const lat = -5.3831; // Approximate coordinates for Suak, Sidomulyo
+            const lon = 105.5833;
+            
             try {
-                const response = await fetch(url);
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
                 const data = await response.json();
-                document.getElementById('weather').innerText = `Weather: ${data.main.temp}°C, ${data.weather[0].description}`;
+                
+                document.getElementById('weather-info').innerHTML = `
+                    <p>Suhu: ${Math.round(data.main.temp)}°C</p>
+                    <p>Kondisi: ${data.weather[0].description}</p>
+                    <p>Kelembaban: ${data.main.humidity}%</p>
+                `;
             } catch (error) {
-                document.getElementById('weather').innerText = 'Unable to fetch weather data';
+                document.getElementById('weather-info').innerHTML = 'Gagal memuat data cuaca';
             }
         }
-        fetchWeather();
 
-        // Display Date and Time
+        // Date and Time
         function updateDateTime() {
             const now = new Date();
-            const formatted = now.toLocaleString('id-ID');
-            document.getElementById('datetime').innerText = formatted;
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'Asia/Jakarta'
+            };
+            document.getElementById('date-time').textContent = now.toLocaleString('id-ID', options);
         }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
 
-        // Placeholder for Company Updates
-        document.getElementById('company-updates').innerText = 'Top 3 News about Central Proteina Prima';
+        // Calendar
+        let currentDate = new Date();
+
+        function isHoliday(date) {
+            // Add logic for holidays here
+            return date.getDay() === 0; // Sunday
+        }
+
+        function updateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('current-month').textContent = 
+                new Date(year, month).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+
+            // Add day headers
+            const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+            days.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day font-bold';
+                dayHeader.textContent = day;
+                calendarDays.appendChild(dayHeader);
+            });
+
+            // Add empty cells for days before first day of month
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarDays.appendChild(emptyDay);
+            }
+
+            // Add days of month
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayElement = document.createElement('div');
+                const date = new Date(year, month, day);
+                dayElement.className = `calendar-day ${isHoliday(date) ? 'holiday' : ''}`;
+                dayElement.textContent = day;
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('mrcModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('mrcModal').style.display = 'none';
+        }
+
+        // Initialize
+        getWeather();
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        updateCalendar();
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('mrcModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
