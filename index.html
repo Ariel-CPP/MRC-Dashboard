@@ -1,3 +1,4 @@
+// index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,85 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MRC Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 20px;
-            background-color: #003366;
-            min-height: 100vh;
-        }
-        .grid-item {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .grid-item:hover {
-            transform: scale(1.02);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 70%;
-            max-width: 700px;
-        }
-        .close {
-            float: right;
-            cursor: pointer;
-            font-size: 28px;
-        }
-        #calendar {
-            background: white;
-            padding: 20px;
-        }
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-        .calendar-day {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #eee;
-        }
-        .holiday {
-            background-color: #ffebee;
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="grid-container">
         <!-- Logo CPP -->
-        <div class="grid-item" style="background-color: white;">
-            <div class="logo-container">
-                <div>
-                    <svg width="200" height="100" viewBox="0 0 200 100">
-                        <text x="50%" y="40%" text-anchor="middle" class="logo-text" fill="#003366" style="font-size: 24px; font-weight: bold;">MRC</text>
-                        <text x="50%" y="70%" text-anchor="middle" class="logo-text" fill="#003366" style="font-size: 24px; font-weight: bold;">CPP</text>
-                    </svg>
-                </div>
+        <div class="grid-item logo-container">
+            <div>
+                <svg width="200" height="100" viewBox="0 0 200 100">
+                    <text x="50%" y="40%" text-anchor="middle" class="logo-text" fill="#003366" style="font-size: 24px; font-weight: bold;">MRC</text>
+                    <text x="50%" y="70%" text-anchor="middle" class="logo-text" fill="#003366" style="font-size: 24px; font-weight: bold;">CPP</text>
+                </svg>
             </div>
-        </div
+        </div>
 
         <!-- Marine Research Centre -->
         <div class="grid-item" style="background-color: #ff69b4;" onclick="openModal()">
@@ -93,7 +28,7 @@
 
         <!-- OpenWeather -->
         <div class="grid-item" style="background-color: #ffa500;" id="weather">
-            <h2 class="text-white text-xl font-bold">Openweather</h2>
+            <h2 class="text-white text-xl font-bold">OpenWeather</h2>
             <div id="weather-info" class="text-white mt-2">Loading weather data...</div>
         </div>
 
@@ -137,121 +72,6 @@
         </div>
     </div>
 
-    <script>
-        // Weather API
-        async function getWeather() {
-            const apiKey = '77d988f2a3d7db4fcd909c288c1f0d31';
-            const lat = -5.3831; // Approximate coordinates for Suak, Sidomulyo
-            const lon = 105.5833;
-            
-            try {
-                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
-                const data = await response.json();
-                
-                document.getElementById('weather-info').innerHTML = `
-                    <p>Suhu: ${Math.round(data.main.temp)}°C</p>
-                    <p>Kondisi: ${data.weather[0].description}</p>
-                    <p>Kelembaban: ${data.main.humidity}%</p>
-                `;
-            } catch (error) {
-                document.getElementById('weather-info').innerHTML = 'Gagal memuat data cuaca';
-            }
-        }
-
-        // Date and Time
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                timeZone: 'Asia/Jakarta'
-            };
-            document.getElementById('date-time').textContent = now.toLocaleString('id-ID', options);
-        }
-
-        // Calendar
-        let currentDate = new Date();
-
-        function isHoliday(date) {
-            // Add logic for holidays here
-            return date.getDay() === 0; // Sunday
-        }
-
-        function updateCalendar() {
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            
-            document.getElementById('current-month').textContent = 
-                new Date(year, month).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const calendarDays = document.getElementById('calendar-days');
-            calendarDays.innerHTML = '';
-
-            // Add day headers
-            const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-            days.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'calendar-day font-bold';
-                dayHeader.textContent = day;
-                calendarDays.appendChild(dayHeader);
-            });
-
-            // Add empty cells for days before first day of month
-            for (let i = 0; i < firstDay.getDay(); i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'calendar-day';
-                calendarDays.appendChild(emptyDay);
-            }
-
-            // Add days of month
-            for (let day = 1; day <= lastDay.getDate(); day++) {
-                const dayElement = document.createElement('div');
-                const date = new Date(year, month, day);
-                dayElement.className = `calendar-day ${isHoliday(date) ? 'holiday' : ''}`;
-                dayElement.textContent = day;
-                calendarDays.appendChild(dayElement);
-            }
-        }
-
-        function previousMonth() {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            updateCalendar();
-        }
-
-        function nextMonth() {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            updateCalendar();
-        }
-
-        // Modal functions
-        function openModal() {
-            document.getElementById('mrcModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('mrcModal').style.display = 'none';
-        }
-
-        // Initialize
-        getWeather();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        updateCalendar();
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('mrcModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
